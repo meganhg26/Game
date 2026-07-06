@@ -1,0 +1,493 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>世界５０大企業LOGO猜謎</title>
+  <style>
+    :root {
+      --bg: #f5f1e8;
+      --panel: #eef6fb;
+      --card: rgba(255, 255, 255, 0.88);
+      --border: #c8dae8;
+      --text: #284255;
+      --muted: #6b8191;
+      --accent: #7aa8c7;
+      --accent-dark: #4e7f9f;
+      --correct: #dff5e6;
+      --correct-border: #66b37c;
+      --wrong: #fff0f0;
+      --wrong-border: #d28a8a;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, #f7efe0 0, transparent 28%),
+        radial-gradient(circle at top right, #dfeef8 0, transparent 32%),
+        linear-gradient(180deg, #f8f3ea 0%, #edf5fb 100%);
+      min-height: 100vh;
+    }
+
+    .page {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 28px 20px 48px;
+    }
+
+    .hero,
+    .scoreboard {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      box-shadow: 0 12px 30px rgba(105, 138, 162, 0.12);
+    }
+
+    .hero {
+      padding: 28px 24px;
+      margin-bottom: 20px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before,
+    .hero::after {
+      content: "";
+      position: absolute;
+      border-radius: 999px;
+      opacity: 0.35;
+      pointer-events: none;
+    }
+
+    .hero::before {
+      width: 180px;
+      height: 180px;
+      background: radial-gradient(circle, #f8dcc8 0%, transparent 70%);
+      left: -40px;
+      top: -50px;
+    }
+
+    .hero::after {
+      width: 220px;
+      height: 220px;
+      background: radial-gradient(circle, #bfe0f3 0%, transparent 70%);
+      right: -60px;
+      bottom: -90px;
+    }
+
+    .hero h1 {
+      margin: 0 0 10px;
+      font-size: clamp(1.8rem, 2vw, 2.5rem);
+      position: relative;
+      z-index: 1;
+    }
+
+    .scoreboard {
+      position: sticky;
+      top: 14px;
+      z-index: 10;
+      display: flex;
+      gap: 14px;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 18px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .stats {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .chip {
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 8px 14px;
+      font-size: 0.96rem;
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      appearance: none;
+      border: 0;
+      border-radius: 999px;
+      padding: 11px 18px;
+      font-size: 0.98rem;
+      cursor: pointer;
+      transition: transform 0.15s ease, opacity 0.15s ease;
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+    }
+
+    .reset-btn {
+      background: #f0a869;
+      color: #fff;
+      border: 1px solid #dd9455;
+    }
+
+    .progress-shell {
+      width: 100%;
+      height: 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.75);
+      border: 1px solid var(--border);
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #83b7d6, #6ed0a1);
+      transition: width 0.2s ease;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 18px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 16px;
+      box-shadow: 0 10px 25px rgba(92, 120, 143, 0.08);
+      display: flex;
+      flex-direction: column;
+      min-height: 285px;
+      transition: border-color 0.18s ease, background 0.18s ease;
+    }
+
+    .card.correct {
+      background: var(--correct);
+      border-color: var(--correct-border);
+    }
+
+    .card.incorrect {
+      background: var(--wrong);
+      border-color: var(--wrong-border);
+    }
+
+    .qno {
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      margin-bottom: 10px;
+    }
+
+    .logo-wrap {
+      background: rgba(255, 255, 255, 0.82);
+      border-radius: 14px;
+      min-height: 130px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px;
+      margin-bottom: 14px;
+      overflow: hidden;
+    }
+
+    .logo-wrap img {
+      max-width: 100%;
+      max-height: 96px;
+      object-fit: contain;
+      display: block;
+    }
+
+    .logo-fallback {
+      color: var(--muted);
+      text-align: center;
+      font-size: 0.94rem;
+      line-height: 1.5;
+    }
+
+    .answer-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: auto;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 11px 12px;
+      font-size: 0.96rem;
+      background: #fff;
+      color: var(--text);
+    }
+
+    input[type="text"]:focus {
+      outline: 2px solid rgba(122, 168, 199, 0.2);
+      border-color: var(--accent);
+    }
+
+    .status {
+      min-width: 22px;
+      text-align: center;
+      font-size: 1.1rem;
+      font-weight: 700;
+    }
+
+    .status.correct {
+      color: #2f8f4d;
+    }
+
+    .status.incorrect {
+      color: #c16363;
+    }
+
+    .hint {
+      min-height: 20px;
+      margin-top: 8px;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    @media (max-width: 640px) {
+      .page {
+        padding: 14px 12px 28px;
+      }
+      .scoreboard {
+        top: 8px;
+        padding: 14px;
+      }
+      .grid {
+        grid-template-columns: 1fr;
+        gap: 14px;
+      }
+      .card {
+        min-height: 250px;
+      }
+      .logo-wrap {
+        min-height: 115px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <section class="hero">
+      <h1>世界５０大企業LOGO猜謎</h1>
+    </section>
+
+    <section class="scoreboard">
+      <div class="stats">
+        <div class="chip" id="correctChip">答對：0</div>
+      </div>
+      <div class="actions">
+        <button class="reset-btn" id="resetBtn" type="button">清空作答</button>
+      </div>
+      <div class="progress-shell"><div class="progress-bar" id="progressBar"></div></div>
+    </section>
+
+    <main class="grid" id="quizGrid"></main>
+  </div>
+
+  <script>
+    const companies = [
+      { id: 1, logo: "logos/01-apple.png", answers: ["apple", "蘋果"] },
+      { id: 2, logo: "logos/02-nvidia.png", answers: ["nvidia", "輝達", "英偉達", "英伟达"] },
+      { id: 3, logo: "logos/03-microsoft.png", answers: ["microsoft", "微軟", "微软"] },
+      { id: 4, logo: "logos/04-alphabet.png", answers: ["alphabet", "alphabet inc", "google", "谷歌"] },
+      { id: 5, logo: "logos/05-amazon.png", answers: ["amazon", "亞馬遜", "亚马逊"] },
+      { id: 6, logo: "logos/06-saudi-aramco.png", answers: ["saudi aramco", "aramco", "沙烏地阿美", "沙特阿美", "沙特阿拉伯国家石油公司"] },
+      { id: 7, logo: "logos/07-meta.png", answers: ["meta", "meta platforms", "臉書", "脸书", "facebook"] },
+      { id: 8, logo: "logos/08-berkshire-hathaway.png", answers: ["berkshire hathaway", "波克夏", "伯克希尔哈撒韦", "巴菲特公司"] },
+      { id: 9, logo: "logos/09-tsmc.png", answers: ["tsmc", "台積電", "台积电", "taiwan semiconductor", "taiwan semiconductor manufacturing company"] },
+      { id: 10, logo: "logos/10-eli-lilly.png", answers: ["eli lilly", "lilly", "禮來", "礼来"] },
+      { id: 11, logo: "logos/11-broadcom.png", answers: ["broadcom", "博通"] },
+      { id: 12, logo: "logos/12-tesla.png", answers: ["tesla", "特斯拉"] },
+      { id: 13, logo: "logos/13-jpmorgan-chase.png", answers: ["jpmorgan chase", "jp morgan chase", "jpmorgan", "摩根大通"] },
+      { id: 14, logo: "logos/14-walmart.png", answers: ["walmart", "沃爾瑪", "沃尔玛"] },
+      { id: 15, logo: "logos/15-novo-nordisk.png", answers: ["novo nordisk", "諾和諾德", "诺和诺德"] },
+      { id: 18, logo: "logos/18-visa.png", answers: ["visa", "維薩", "威士", "维萨"] },
+      { id: 20, logo: "logos/20-mastercard.png", answers: ["mastercard", "萬事達", "万事达"] },
+      { id: 21, logo: "logos/21-pg.png", answers: ["procter gamble", "procter and gamble", "p&g", "pg", "寶僑", "宝洁"] },
+      { id: 22, logo: "logos/22-johnson-johnson.png", answers: ["johnson johnson", "johnson and johnson", "jnj", "嬌生", "强生"] },
+      { id: 23, logo: "logos/23-costco.png", answers: ["costco", "好市多", "开市客", "開市客"] },
+      { id: 24, logo: "logos/24-samsung.png", answers: ["samsung", "三星"] },
+      { id: 25, logo: "logos/25-oracle.png", answers: ["oracle", "甲骨文"] },
+      { id: 26, logo: "logos/26-lvmh.png", answers: ["lvmh", "路威酩軒", "酩悦轩尼诗路易威登", "酩悅軒尼詩路易威登"] },
+      { id: 27, logo: "logos/27-home-depot.png", answers: ["home depot", "家得寶", "家得宝"] },
+      { id: 28, logo: "logos/28-asml.png", answers: ["asml", "艾司摩爾", "阿斯麦"] },
+      { id: 29, logo: "logos/29-abbvie.png", answers: ["abbvie", "艾伯維", "艾伯维"] },
+      { id: 30, logo: "logos/30-bank-of-america.png", answers: ["bank of america", "bofa", "america bank", "美國銀行", "美国银行"] },
+      { id: 31, logo: "logos/31-coca-cola.png", answers: ["coca cola", "cocacola", "可口可樂", "可口可乐"] },
+      { id: 32, logo: "logos/32-icbc.png", answers: ["icbc", "工商銀行", "工商银行", "industrial and commercial bank of china"] },
+      { id: 33, logo: "logos/33-netflix.png", answers: ["netflix", "奈飛", "奈飞", "網飛", "网飞"] },
+      { id: 34, logo: "logos/34-merck.png", answers: ["merck", "默克"] },
+      { id: 35, logo: "logos/35-nestle.png", answers: ["nestle", "nestlé", "雀巢"] },
+      { id: 36, logo: "logos/36-roche.png", answers: ["roche", "羅氏", "罗氏"] },
+      { id: 37, logo: "logos/37-chevron.png", answers: ["chevron", "雪佛龍", "雪佛龙"] },
+      { id: 38, logo: "logos/38-astrazeneca.png", answers: ["astrazeneca", "astra zeneca", "阿斯利康"] },
+      { id: 39, logo: "logos/39-salesforce.png", answers: ["salesforce", "賽富時", "赛富时"] },
+      { id: 40, logo: "logos/40-hermes.png", answers: ["hermes", "hermès", "愛馬仕", "爱马仕"] },
+      { id: 41, logo: "logos/41-sap.png", answers: ["sap", "思愛普", "思爱普"] },
+      { id: 42, logo: "logos/42-kweichow-moutai.png", answers: ["kweichow moutai", "moutai", "貴州茅台", "贵州茅台"] },
+      { id: 43, logo: "logos/43-adobe.png", answers: ["adobe", "奧多比", "奥多比"] },
+      { id: 44, logo: "logos/44-ihc.png", answers: ["international holding company", "ihc", "國際控股公司", "国际控股公司"] },
+      { id: 45, logo: "logos/45-reliance-industries.png", answers: ["reliance industries", "reliance", "信實工業", "信实工业"] },
+      { id: 46, logo: "logos/46-toyota.png", answers: ["toyota", "豐田", "丰田"] },
+      { id: 47, logo: "logos/47-amd.png", answers: ["amd", "超微", "超威半導體", "超威半导体", "advanced micro devices"] },
+      { id: 48, logo: "logos/48-pepsico.png", answers: ["pepsico", "pepsi", "百事", "百事公司"] },
+      { id: 49, logo: "logos/49-novartis.png", answers: ["novartis", "諾華", "诺华"] },
+      { id: 50, logo: "logos/50-loreal.png", answers: ["loreal", "l'oreal", "l’oréal", "萊雅", "欧莱雅", "歐萊雅"] }
+    ];
+
+    const storageKey = "logo-quiz-top50-progress-v1";
+    const grid = document.getElementById("quizGrid");
+    const resetBtn = document.getElementById("resetBtn");
+    const correctChip = document.getElementById("correctChip");
+    const progressBar = document.getElementById("progressBar");
+
+    const savedAnswers = JSON.parse(localStorage.getItem(storageKey) || "{}");
+
+    function normalize(text) {
+      return (text || "")
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase()
+        .replace(/[＆&]/g, "and")
+        .replace(/['’`´]/g, "")
+        .replace(/[^a-z0-9\u4e00-\u9fff]+/g, "");
+    }
+
+    function isCorrectAnswer(input, answers) {
+      const normalizedInput = normalize(input);
+      if (!normalizedInput) return false;
+      return answers.some(answer => normalize(answer) === normalizedInput);
+    }
+
+    function renderCards() {
+      grid.innerHTML = companies.map(company => {
+        const savedValue = savedAnswers[company.id] || "";
+        return `
+          <article class="card" data-id="${company.id}">
+            <div class="qno">題號 ${company.id}</div>
+            <div class="logo-wrap">
+              <img src="${company.logo}" alt="題號 ${company.id} 的公司 logo" loading="lazy"
+                onerror="this.parentElement.innerHTML='<div class=&quot;logo-fallback&quot;>Logo 載入失敗<br>請執行下載腳本後重整頁面</div>'">
+            </div>
+            <div class="answer-row">
+              <input type="text" value="${escapeHtml(savedValue)}" placeholder="輸入公司名稱" autocomplete="off" spellcheck="false" />
+              <span class="status" aria-hidden="true"></span>
+            </div>
+            <div class="hint"></div>
+          </article>
+        `;
+      }).join("");
+    }
+
+    function escapeHtml(text) {
+      return text
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    function evaluateCard(card) {
+      const id = Number(card.dataset.id);
+      const company = companies.find(item => item.id === id);
+      const input = card.querySelector("input");
+      const status = card.querySelector(".status");
+      const hint = card.querySelector(".hint");
+      const value = input.value.trim();
+      const correct = isCorrectAnswer(value, company.answers);
+
+      card.classList.remove("correct", "incorrect");
+      status.classList.remove("correct", "incorrect");
+
+      if (!value) {
+        status.textContent = "";
+        hint.textContent = "";
+      } else if (correct) {
+        card.classList.add("correct");
+        status.classList.add("correct");
+        status.textContent = "✓";
+        hint.textContent = "答對了";
+      } else {
+        card.classList.add("incorrect");
+        status.classList.add("incorrect");
+        status.textContent = "✕";
+        hint.textContent = "目前答案不對，之後可再修改";
+      }
+    }
+
+    function updateStats() {
+      let correct = 0;
+      let answered = 0;
+
+      document.querySelectorAll(".card").forEach(card => {
+        const id = Number(card.dataset.id);
+        const company = companies.find(item => item.id === id);
+        const value = card.querySelector("input").value.trim();
+        if (value) {
+          answered += 1;
+          if (isCorrectAnswer(value, company.answers)) correct += 1;
+        }
+      });
+
+      correctChip.textContent = `答對：${correct}`;
+      progressBar.style.width = `${Math.round((answered / companies.length) * 100)}%`;
+      return { correct, answered, unanswered: companies.length - answered };
+    }
+
+    function persist() {
+      document.querySelectorAll(".card").forEach(card => {
+        const id = Number(card.dataset.id);
+        savedAnswers[id] = card.querySelector("input").value;
+      });
+      localStorage.setItem(storageKey, JSON.stringify(savedAnswers));
+    }
+
+    function refreshAll() {
+      document.querySelectorAll(".card").forEach(evaluateCard);
+      updateStats();
+      persist();
+    }
+
+    renderCards();
+
+    document.querySelectorAll(".card input").forEach(input => {
+      input.addEventListener("input", () => {
+        const card = input.closest(".card");
+        evaluateCard(card);
+        updateStats();
+        persist();
+      });
+    });
+
+    resetBtn.addEventListener("click", () => {
+      if (!window.confirm("要清空目前所有作答嗎？")) return;
+      document.querySelectorAll(".card input").forEach(input => {
+        input.value = "";
+      });
+      localStorage.removeItem(storageKey);
+      Object.keys(savedAnswers).forEach(key => delete savedAnswers[key]);
+      refreshAll();
+    });
+
+    refreshAll();
+  </script>
+</body>
+</html>
