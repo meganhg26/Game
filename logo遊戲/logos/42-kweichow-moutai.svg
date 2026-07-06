@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="220" viewBox="0 0 480 220">
+  <rect width="480" height="220" rx="24" fill="#fff5f0"/>
+  <rect x="14" y="14" width="452" height="192" rx="18" fill="#ffffff" stroke="#e3c9c0" stroke-width="4"/>
+  <text x="240" y="102" text-anchor="middle" font-size="48" font-family="Arial, sans-serif" font-weight="700" fill="#b3352c">茅台</text>
+  <text x="240" y="142" text-anchor="middle" font-size="22" font-family="Arial, sans-serif" fill="#8d6b67">Kweichow Moutai</text>
+</svg>

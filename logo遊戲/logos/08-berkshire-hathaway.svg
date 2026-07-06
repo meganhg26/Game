@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="220" viewBox="0 0 480 220">
+  <rect width="480" height="220" rx="24" fill="#f4efe6"/>
+  <rect x="14" y="14" width="452" height="192" rx="18" fill="#ffffff" stroke="#c8dae8" stroke-width="4"/>
+  <text x="240" y="102" text-anchor="middle" font-size="54" font-family="Arial, sans-serif" font-weight="700" fill="#2c4356">BH</text>
+  <text x="240" y="144" text-anchor="middle" font-size="24" font-family="Arial, sans-serif" fill="#6b8191">Berkshire Hathaway</text>
+</svg>
